@@ -19,6 +19,7 @@ def config():
     _, imgS = cap.read()
 
     return img, imgS, images, Names, Y_Center, X_Center, path, cap
+
 def LoadImages():
     myList = os.listdir(path)
     print(myList)

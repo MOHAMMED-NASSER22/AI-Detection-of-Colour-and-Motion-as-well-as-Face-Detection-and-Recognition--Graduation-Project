@@ -5,6 +5,7 @@ import time
 
 def empty(a):
     pass
+#function to compine shown windows
 
 def stackImages(scale,imgArray):
     rows = len(imgArray)
