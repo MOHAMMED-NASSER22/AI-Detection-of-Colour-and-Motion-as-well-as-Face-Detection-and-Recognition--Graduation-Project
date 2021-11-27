@@ -5,7 +5,7 @@ import os
 import threading
 import time
 
-
+# for initialization
 def config():
     print("reading known...")
     path = 'known'
@@ -19,7 +19,7 @@ def config():
     _, imgS = cap.read()
 
     return img, imgS, images, Names, Y_Center, X_Center, path, cap
-
+# load all the known images
 def LoadImages():
     myList = os.listdir(path)
     print(myList)
@@ -28,7 +28,7 @@ def LoadImages():
         images.append(curImg)
         Names.append(os.path.splitext(cl)[0])
     print(Names)
-
+# find all faces
 def findEncoding(images):
     encodeList = []
     for img in images:
@@ -36,6 +36,7 @@ def findEncoding(images):
         encode = face_recognition.face_encodings(img)[0]
         encodeList.append(encode)
     return encodeList
+# save the results of encoded faced to get them faster next time
 def EncodingImage():
     import pickle
 
@@ -55,7 +56,7 @@ def EncodingImage():
     print(len(Names))
     print(len(Outlist))
 
-
+# live feed without any face reconciliation (i did it for the limitation of Raspberry pi 4 computation power )
 def LiveFeed():
     while True:
         try:  # there is many problem occur here from threading  exception  so i except the exception XD And it work !!!
@@ -67,6 +68,8 @@ def LiveFeed():
                     break
         except:
             print("there is something wrong happend in thread 1 , trying again ....")
+
+# live feed but now with all the faces been recognized
 def faceRecognition():
     while True:
         try:  # there is many problem occur here from threading exception  so i except the exception XD And it work !!!
@@ -79,12 +82,13 @@ def faceRecognition():
                 # _, imgS = cap.read()
                 # _, imgS = cap.read()
                 # imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
+                # turn  to gray for reducing the cpu needs (as no need color for detection)
                 imgSGRAY = cv2.cvtColor(imgS, cv2.COLOR_BGR2GRAY)
-                imgSRGB = cv2.cvtColor(imgSGRAY, cv2.COLOR_BGR2RGB)
+                imgSRGB = cv2.cvtColor(imgSGRAY, cv2.COLOR_BGR2RGB)  # transfer the frame from BGR to RGB
 
-                facesCurFrame = face_recognition.face_locations(imgSRGB)
-                encodesCurFrame = face_recognition.face_encodings(imgSRGB, facesCurFrame)
-
+                facesCurFrame = face_recognition.face_locations(imgSRGB)  # get all faces
+                encodesCurFrame = face_recognition.face_encodings(imgSRGB, facesCurFrame)  # encode all faces
+                # compare the known faces with the faces in the frame
                 for encodeFace, faceLoc in zip(encodesCurFrame, facesCurFrame):
                     matches = face_recognition.compare_faces(Outlist, encodeFace)
                     # print(matches)
@@ -106,14 +110,14 @@ def faceRecognition():
                         # cv2.putText(imgS, f'{name} {round(1 - (faceDis[matchIndex]), 2)}', (x1 + 6, y2 - 6),
                         #             cv2.FONT_HERSHEY_SIMPLEX, .7, (255, 255, 255),
                         #             2)  # if i want to print the matches percent %
-                        # markAttendce(name)
+                        # markAttendce(name) # save the when the face detect in the app
                         # faceloc1 = faceLoc
                         # print(faceLoc)
                         X_Center = (x1 + x2) / 2
                         Y_Center = (y1 + y2) / 2
                         print(" X_Center :  " + str(X_Center) + "  Y_Center :  " + str(Y_Center))
                     else:
-                        name = 'UNKNOWN'
+                        name = 'UNKNOWN' # if there is unknown face print unknown under his face
                         print(name)
                         y1, x2, y2, x1 = faceLoc
                         # y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4

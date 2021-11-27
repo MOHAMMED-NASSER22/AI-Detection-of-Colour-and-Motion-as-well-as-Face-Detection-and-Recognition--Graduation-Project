@@ -4,7 +4,7 @@ import dlib  # machine learning lib  ... Cmake ... wheel
 
 video = cv2.VideoCapture(0)
 
-detector = dlib.get_frontal_face_detector() 
+detector = dlib.get_frontal_face_detector()
 
 while video.isOpened():
     _, frame = video.read()  # get the frame
