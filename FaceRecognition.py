@@ -49,6 +49,7 @@ def EncodingImage():
         print("Begin start new encoding... ,  it will take awhile ")
         print("Don't worry  it will load faster next time")
         Outlist = findEncoding(images)
+
         # to write
         with open('EncodingImage.txt', 'wb') as file:
             pickle.dump(Outlist, file)
@@ -132,7 +133,8 @@ def faceRecognition():
         except:
             print("there is something wrong happend in thread 2 , trying again ....")
 
-def finaly():
+# calculate the time of encoding all known faces and print it
+def timeperf():
     start = time.perf_counter()
     LoadImages()
     print('start encoding... ')
@@ -144,8 +146,9 @@ def finaly():
     return Outlist
 
 
-img, imgS, images, Names, Y_Center, X_Center, path, cap = config()
-Outlist = finaly()
+img, imgS, images, Names, Y_Center, X_Center, path, cap = config()  # for initialization
+
+Outlist = timeperf() # calculate the time
 
 
 # threading
